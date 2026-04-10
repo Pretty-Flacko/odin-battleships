@@ -30,12 +30,23 @@ export default class Gameboard {
 			throw new Error("Ship is out of bounds");
 		}
 
+		const coords = [];
+
 		for (let i = 0; i < ship.length; i++) {
-			if (direction === "horizontal") {
-				this.grid[y][x + i] = ship;
-			} else if (direction === "vertical") {
-				this.grid[y + i][x] = ship;
+			const cx = direction === "horizontal" ? x + i : x;
+			const cy = direction === "vertical" ? y + i : y;
+
+			coords.push([cx, cy]);
+		}
+
+		for (const [cx, cy] of coords) {
+			if (this.grid[cy][cx] !== null) {
+				throw new Error("Occupied");
 			}
+		}
+
+		for (const [cx, cy] of coords) {
+			this.grid[cy][cx] = ship;
 		}
 	}
 

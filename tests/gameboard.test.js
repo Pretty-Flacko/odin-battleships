@@ -55,4 +55,16 @@ describe("Gameboard", () => {
 			board.placeShip(ship, 0, 8, "vertical");
 		}).toThrow();
 	});
+
+	test("doesn't allow overlapping ships", () => {
+		const board = new Gameboard();
+		const ship = new Ship(3);
+		const ship2 = new Ship(2);
+
+		board.placeShip(ship, 0, 0, "horizontal");
+
+		expect(() => {
+			board.placeShip(ship2, 0, 0, "vertical");
+		}).toThrow();
+	});
 });
