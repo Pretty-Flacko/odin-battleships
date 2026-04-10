@@ -43,8 +43,8 @@ describe("Gameboard", () => {
 		const ship = new Ship(3);
 
 		expect(() => {
-			board.placeShip(ship, 8, 0, "horizontal");
-		}).toThrow();
+			board.placeShip(ship, -1, 0, "horizontal");
+		}).toThrow("Ship is out of bounds");
 	});
 
 	test("doesn't place ship outside grid vertically", () => {
@@ -53,7 +53,7 @@ describe("Gameboard", () => {
 
 		expect(() => {
 			board.placeShip(ship, 0, 8, "vertical");
-		}).toThrow();
+		}).toThrow("Ship is out of bounds");
 	});
 
 	test("doesn't allow overlapping ships", () => {
@@ -65,6 +65,18 @@ describe("Gameboard", () => {
 
 		expect(() => {
 			board.placeShip(ship2, 0, 0, "vertical");
-		}).toThrow();
+		}).toThrow("Cell is occupied");
+	});
+
+	test("doesn't allow ships to be adjacent (including diagonals)", () => {
+		const board = new Gameboard();
+		const ship = new Ship(2);
+		const ship2 = new Ship(2);
+
+		board.placeShip(ship, 1, 1, "horizontal");
+
+		expect(() => {
+			board.placeShip(ship2, 3, 2, "horizontal");
+		}).toThrow("Too close to existing ship");
 	});
 });
