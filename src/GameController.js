@@ -12,4 +12,17 @@ export default class GameController {
 		this.currentPlayer =
 			this.currentPlayer === this.player1 ? this.player2 : this.player1;
 	}
+
+	playTurn(x, y) {
+		const enemy =
+			this.currentPlayer === this.player1 ? this.player2 : this.player1;
+
+		const result = this.currentPlayer.attack(enemy.board, x, y);
+
+		if (result === "miss") {
+			this.switchTurn();
+		}
+
+		return result;
+	}
 }

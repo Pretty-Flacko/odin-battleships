@@ -23,4 +23,14 @@ describe("GameController", () => {
 
 		expect(game.currentPlayer).not.toBe(first);
 	});
+
+	test("switches turn after a miss", () => {
+		const game = new GameController();
+
+		const missingPlayer = game.currentPlayer;
+
+		game.playTurn(5, 5);
+
+		expect(game.currentPlayer).not.toBe(missingPlayer);
+	});
 });
