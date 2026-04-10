@@ -63,19 +63,6 @@ export default class Gameboard {
 		return this.ships.every((ship) => ship.isSunk());
 	}
 
-	#getShipCoordinates(shipLength, x, y, direction) {
-		const coords = [];
-
-		for (let i = 0; i < shipLength; i++) {
-			const cx = direction === "horizontal" ? x + i : x;
-			const cy = direction === "vertical" ? y + i : y;
-
-			coords.push([cx, cy]);
-		}
-
-		return coords;
-	}
-
 	#validatePlacement(shipLength, x, y, direction) {
 		if (
 			x < 0 ||
@@ -96,6 +83,19 @@ export default class Gameboard {
 			if (this.#isAdjacentOccupied(cx, cy)) {
 				throw new Error("Too close to existing ship");
 			}
+		}
+
+		return coords;
+	}
+
+	#getShipCoordinates(shipLength, x, y, direction) {
+		const coords = [];
+
+		for (let i = 0; i < shipLength; i++) {
+			const cx = direction === "horizontal" ? x + i : x;
+			const cy = direction === "vertical" ? y + i : y;
+
+			coords.push([cx, cy]);
 		}
 
 		return coords;
