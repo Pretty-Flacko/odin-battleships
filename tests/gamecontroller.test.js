@@ -7,4 +7,20 @@ describe("GameController", () => {
 		expect(game.player1).toBeDefined();
 		expect(game.player2).toBeDefined();
 	});
+
+	test("starts with player1 as current player", () => {
+		const game = new GameController();
+
+		expect(game.currentPlayer).toBe(game.player1);
+	});
+
+	test("switches turns between players", () => {
+		const game = new GameController();
+
+		const first = game.currentPlayer;
+
+		game.switchTurn();
+
+		expect(game.currentPlayer).not.toBe(first);
+	});
 });

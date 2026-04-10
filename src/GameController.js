@@ -7,4 +7,9 @@ export default class GameController {
 
 		this.currentPlayer = this.player1;
 	}
+
+	switchTurn() {
+		this.currentPlayer =
+			this.currentPlayer === this.player1 ? this.player2 : this.player1;
+	}
 }
