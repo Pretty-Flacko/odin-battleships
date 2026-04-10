@@ -79,4 +79,13 @@ describe("Gameboard", () => {
 			board.placeShip(ship2, 3, 2, "horizontal");
 		}).toThrow("Too close to existing ship");
 	});
+
+	test("records a miss when attacking empty cell", () => {
+		const board = new Gameboard();
+
+		const result = board.receiveAttack(0, 0);
+
+		expect(result).toBe("miss");
+		expect(board.grid[0][0]).toBe("miss");
+	});
 });

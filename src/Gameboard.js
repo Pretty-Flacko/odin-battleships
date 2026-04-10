@@ -1,5 +1,3 @@
-import { EntryOptionPlugin } from "webpack";
-
 export default class Gameboard {
 	constructor(size = 10) {
 		this.size = size;
@@ -51,6 +49,13 @@ export default class Gameboard {
 
 	hasShipAt(x, y) {
 		return this.grid[y][x] !== null;
+	}
+
+	receiveAttack(x, y) {
+		if (this.grid[y][x] === null) {
+			this.grid[y][x] = "miss";
+			return "miss";
+		}
 	}
 
 	#getShipCoordinates(shipLength, x, y, direction) {
