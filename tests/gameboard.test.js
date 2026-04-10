@@ -1,3 +1,4 @@
+import { experiments } from "webpack";
 import Gameboard from "../src/Gameboard.js";
 import Ship from "../src/Ship.js";
 
@@ -103,5 +104,28 @@ describe("Gameboard", () => {
 
 		expect(result).toBe("miss");
 		expect(board.grid[0][0].wasHit).toBe(true);
+	});
+
+	test("sends 'hit' to the correct ship and returns 'hit'", () => {
+		const board = new Gameboard();
+		const ship = new Ship(3);
+
+		board.placeShip(ship, 0, 0);
+
+		const result = board.receiveAttack(0, 0);
+
+		expect(result).toBe("hit");
+		expect(board.grid[0][0].wasHit).toBe(true);
+		expect(ship.hits).toBe(1);
+	});
+
+	test("doesn't allow attacking same cell twice", () => {
+		const board = new Gameboard();
+
+		board.receiveAttack(0, 0);
+
+		expect(() => {
+			board.receiveAttack(0, 0);
+		}).toThrow("Already attacked");
 	});
 });

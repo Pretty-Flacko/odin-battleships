@@ -55,9 +55,19 @@ export default class Gameboard {
 	}
 
 	receiveAttack(x, y) {
-		if (this.grid[y][x].ship === null) {
-			this.grid[y][x].wasHit = true;
-			return "miss";
+		const targetCell = this.grid[y][x];
+
+		if (targetCell.wasHit === true) {
+			throw new Error("Already attacked");
+		} else {
+			targetCell.wasHit = true;
+
+			if (targetCell.ship) {
+				targetCell.ship.hit();
+				return "hit";
+			} else {
+				return "miss";
+			}
 		}
 	}
 
