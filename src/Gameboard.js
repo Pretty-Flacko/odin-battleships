@@ -22,16 +22,17 @@ export default class Gameboard {
 		return grid;
 	}
 
-	placeShip(ship, coordinate) {
-		this.ships.push({ ship, coordinate });
+	placeShip(ship, x, y, direction = "horizontal") {
+		for (let i = 0; i < ship.length; i++) {
+			if (direction === "horizontal") {
+				this.grid[y][x + i] = ship;
+			} else if (direction === "vertical") {
+				this.grid[y + i][x] = ship;
+			}
+		}
 	}
 
-	hasShipAt(coordinate) {
-		return this.ships.some((entry) => {
-			return (
-				entry.coordinate[0] === coordinate[0] &&
-				entry.coordinate[1] === coordinate[1]
-			);
-		});
+	hasShipAt(x, y) {
+		return this.grid[y][x] !== null;
 	}
 }

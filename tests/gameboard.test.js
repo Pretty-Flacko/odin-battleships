@@ -16,12 +16,25 @@ describe("Gameboard", () => {
 		expect(board.grid[5][7]).toBe(null);
 	});
 
-	test("can place a ship at a coordinate", () => {
+	test("places ship horizontally", () => {
 		const board = new Gameboard();
 		const ship = new Ship(3);
 
-		board.placeShip(ship, [0, 0]);
+		board.placeShip(ship, 7, 0, "horizontal");
 
-		expect(board.hasShipAt([0, 0])).toBe(true);
+		expect(board.hasShipAt(7, 0)).toBe(true);
+		expect(board.hasShipAt(8, 0)).toBe(true);
+		expect(board.hasShipAt(9, 0)).toBe(true);
+	});
+
+	test("places ship vertically", () => {
+		const board = new Gameboard();
+		const ship = new Ship(3);
+
+		board.placeShip(ship, 0, 4, "vertical");
+
+		expect(board.hasShipAt(0, 4)).toBe(true);
+		expect(board.hasShipAt(0, 5)).toBe(true);
+		expect(board.hasShipAt(0, 6)).toBe(true);
 	});
 });
