@@ -11,7 +11,10 @@ export default class Gameboard {
 			const row = [];
 
 			for (let x = 0; x < size; x++) {
-				row.push(null);
+				row.push({
+					ship: null,
+					status: "empty",
+				});
 			}
 
 			grid.push(row);
@@ -33,7 +36,7 @@ export default class Gameboard {
 		const coords = this.#getShipCoordinates(ship.length, x, y, direction);
 
 		for (const [cx, cy] of coords) {
-			if (this.grid[cy][cx] !== null) {
+			if (this.grid[cy][cx].ship !== null) {
 				throw new Error("Cell is occupied");
 			}
 
@@ -43,18 +46,17 @@ export default class Gameboard {
 		}
 
 		for (const [cx, cy] of coords) {
-			this.grid[cy][cx] = ship;
+			this.grid[cy][cx].ship = ship;
 		}
 	}
 
 	hasShipAt(x, y) {
-		return this.grid[y][x] !== null;
+		return this.grid[y][x].ship !== null;
 	}
 
 	receiveAttack(x, y) {
-		if (this.grid[y][x] === null) {
-			this.grid[y][x] = "miss";
-			return "miss";
+		if (this.grid[y][x].ship === null) {
+			return (this.grid[y][x].status = "miss");
 		}
 	}
 
@@ -86,7 +88,7 @@ export default class Gameboard {
 				}
 
 				// check adjacent cells for a ship
-				if (this.grid[ny][nx] !== null) {
+				if (this.grid[ny][nx].ship !== null) {
 					return true;
 				}
 			}

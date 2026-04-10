@@ -9,11 +9,27 @@ describe("Gameboard", () => {
 		expect(board.grid[0].length).toBe(10); // columns (x)
 	});
 
-	test("grid cells are initialized as null", () => {
+	test("grid cells are initialized properly", () => {
 		const board = new Gameboard();
 
-		expect(board.grid[0][0]).toBe(null);
-		expect(board.grid[5][7]).toBe(null);
+		expect(board.grid[0][0]).toStrictEqual({
+			ship: null,
+			status: "empty",
+		});
+		expect(board.grid[5][7]).toStrictEqual({
+			ship: null,
+			status: "empty",
+		});
+	});
+
+	test("places ship correctly into grid cell object", () => {
+		const board = new Gameboard();
+		const ship = new Ship(2);
+
+		board.placeShip(ship, 0, 0, "horizontal");
+
+		expect(board.grid[0][0].ship).toBe(ship);
+		expect(board.grid[0][1].ship).toBe(ship);
 	});
 
 	test("places ship horizontally", () => {
@@ -86,6 +102,6 @@ describe("Gameboard", () => {
 		const result = board.receiveAttack(0, 0);
 
 		expect(result).toBe("miss");
-		expect(board.grid[0][0]).toBe("miss");
+		expect(board.grid[0][0].status).toBe("miss");
 	});
 });
