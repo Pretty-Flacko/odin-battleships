@@ -37,4 +37,22 @@ describe("Gameboard", () => {
 		expect(board.hasShipAt(0, 5)).toBe(true);
 		expect(board.hasShipAt(0, 6)).toBe(true);
 	});
+
+	test("doesn't place ship outside grid horizontally", () => {
+		const board = new Gameboard();
+		const ship = new Ship(3);
+
+		expect(() => {
+			board.placeShip(ship, 8, 0, "horizontal");
+		}).toThrow();
+	});
+
+	test("doesn't place ship outside grid vertically", () => {
+		const board = new Gameboard();
+		const ship = new Ship(3);
+
+		expect(() => {
+			board.placeShip(ship, 0, 8, "vertical");
+		}).toThrow();
+	});
 });

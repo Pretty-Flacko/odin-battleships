@@ -23,6 +23,13 @@ export default class Gameboard {
 	}
 
 	placeShip(ship, x, y, direction = "horizontal") {
+		if (
+			(direction === "horizontal" && x + ship.length > this.size) ||
+			(direction === "vertical" && y + ship.length > this.size)
+		) {
+			throw new Error("Ship is out of bounds");
+		}
+
 		for (let i = 0; i < ship.length; i++) {
 			if (direction === "horizontal") {
 				this.grid[y][x + i] = ship;
