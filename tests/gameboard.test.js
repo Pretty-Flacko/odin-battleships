@@ -97,6 +97,18 @@ describe("Gameboard", () => {
 		}).toThrow("Too close to existing ship");
 	});
 
+	test("throws error when attack is out of bounds", () => {
+		const board = new Gameboard();
+
+		expect(() => {
+			board.receiveAttack(-1, 0);
+		}).toThrow("Attack is out of bounds");
+
+		expect(() => {
+			board.receiveAttack(0, 10);
+		}).toThrow("Attack is out of bounds");
+	});
+
 	test("records a hit and returns a miss when attacking empty cell", () => {
 		const board = new Gameboard();
 

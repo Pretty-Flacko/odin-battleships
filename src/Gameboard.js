@@ -55,6 +55,10 @@ export default class Gameboard {
 	}
 
 	receiveAttack(x, y) {
+		if (x < 0 || y < 0 || x >= this.size || y >= this.size) {
+			throw new Error("Attack is out of bounds");
+		}
+
 		const targetCell = this.grid[y][x];
 
 		if (targetCell.wasHit === true) {
