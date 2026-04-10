@@ -1,4 +1,5 @@
 import GameController from "../src/GameController.js";
+import Ship from "../src/Ship.js";
 
 describe("GameController", () => {
 	test("initializes with two players", () => {
@@ -32,5 +33,19 @@ describe("GameController", () => {
 		game.playTurn(5, 5);
 
 		expect(game.currentPlayer).not.toBe(missingPlayer);
+	});
+
+	test("detects winner when all ships are sunk", () => {
+		const game = new GameController();
+
+		const ship = new Ship(1);
+
+		game.player1.board.placeShip(ship, 0, 0);
+
+		ship.hit();
+
+		const winner = game.checkWinner();
+
+		expect(winner).toBe(game.player2);
 	});
 });
