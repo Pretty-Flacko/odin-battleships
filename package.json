@@ -1,5 +1,5 @@
 {
-	"name": "webpack-starter-template",
+	"name": "odin-battleships",
 	"version": "1.0.0",
 	"description": "",
 	"main": "index.js",
@@ -12,15 +12,15 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/Pretty-Flacko/webpack-starter-template.git"
+		"url": "git+https://github.com/Pretty-Flacko/odin-battleships.git"
 	},
 	"keywords": [],
 	"author": "",
 	"license": "ISC",
 	"bugs": {
-		"url": "https://github.com/Pretty-Flacko/webpack-starter-template/issues"
+		"url": "https://github.com/Pretty-Flacko/odin-battleships/issues"
 	},
-	"homepage": "https://github.com/Pretty-Flacko/webpack-starter-template#readme",
+	"homepage": "https://github.com/Pretty-Flacko/odin-battleships#readme",
 	"devDependencies": {
 		"@babel/preset-env": "^7.29.2",
 		"@eslint/js": "^9.39.2",
