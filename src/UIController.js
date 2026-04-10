@@ -1,4 +1,4 @@
-export default class UI {
+export default class UIController {
 	constructor(game) {
 		this.game = game;
 
@@ -6,8 +6,16 @@ export default class UI {
 		this.enemyBoardEl = document.querySelector("#enemy-board");
 	}
 
+	render() {
+		this.renderBoard(this.game.player1.board, this.playerBoardEl, false);
+		this.renderBoard(this.game.player2.board, this.enemyBoardEl, true);
+
+		this.addListeners();
+	}
+
 	renderBoard(board, container, isEnemy = false) {
 		container.innerHTML = "";
+		container.classList.add("board");
 
 		board.grid.forEach((row, y) => {
 			row.forEach((cell, x) => {
@@ -26,7 +34,7 @@ export default class UI {
 		});
 	}
 
-	addEnemyBoardListeners() {
+	addListeners() {
 		this.enemyBoardEl.addEventListener("click", (e) => {
 			const cell = e.target;
 			if (!cell.classList.contains("cell")) return;

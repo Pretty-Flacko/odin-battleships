@@ -1,0 +1,28 @@
+#game {
+	display: flex;
+	gap: 40px;
+}
+
+.board {
+	display: grid;
+	grid-template-columns: repeat(10, 30px);
+	grid-template-rows: repeat(10, 30px);
+}
+
+.cell {
+	width: 30px;
+	height: 30px;
+	border: 1px solid #ccc;
+}
+
+.ship {
+	background-color: #808080;
+}
+
+.hit {
+	background-color: #ff0000;
+}
+
+.miss {
+	background-color: #add8e6;
+}
