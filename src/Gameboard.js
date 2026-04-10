@@ -13,7 +13,7 @@ export default class Gameboard {
 			for (let x = 0; x < size; x++) {
 				row.push({
 					ship: null,
-					status: "empty",
+					wasHit: false,
 				});
 			}
 
@@ -56,7 +56,8 @@ export default class Gameboard {
 
 	receiveAttack(x, y) {
 		if (this.grid[y][x].ship === null) {
-			return (this.grid[y][x].status = "miss");
+			this.grid[y][x].wasHit = true;
+			return "miss";
 		}
 	}
 

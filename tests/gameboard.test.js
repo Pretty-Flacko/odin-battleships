@@ -14,11 +14,11 @@ describe("Gameboard", () => {
 
 		expect(board.grid[0][0]).toStrictEqual({
 			ship: null,
-			status: "empty",
+			wasHit: false,
 		});
 		expect(board.grid[5][7]).toStrictEqual({
 			ship: null,
-			status: "empty",
+			wasHit: false,
 		});
 	});
 
@@ -96,12 +96,12 @@ describe("Gameboard", () => {
 		}).toThrow("Too close to existing ship");
 	});
 
-	test("records a miss when attacking empty cell", () => {
+	test("records a hit and returns a miss when attacking empty cell", () => {
 		const board = new Gameboard();
 
 		const result = board.receiveAttack(0, 0);
 
 		expect(result).toBe("miss");
-		expect(board.grid[0][0].status).toBe("miss");
+		expect(board.grid[0][0].wasHit).toBe(true);
 	});
 });
