@@ -1,0 +1,11 @@
+# Dependencies
+node-modules
+
+#Build output
+dist
+
+#Test coverage
+coverage
+
+#Bundled / minified files
+*.min.js
