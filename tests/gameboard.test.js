@@ -1,4 +1,3 @@
-import { experiments } from "webpack";
 import Gameboard from "../src/Gameboard.js";
 import Ship from "../src/Ship.js";
 
