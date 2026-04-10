@@ -140,4 +140,27 @@ describe("Gameboard", () => {
 			board.receiveAttack(0, 0);
 		}).toThrow("Already attacked");
 	});
+
+	test("reports 'false' if not all ships are sunk", () => {
+		const board = new Gameboard();
+		const ship = new Ship(2);
+
+		board.placeShip(ship, 0, 0);
+
+		ship.hit();
+
+		expect(board.allShipsSunk()).toBe(false);
+	});
+
+	test("reports 'true' if all ships are sunk", () => {
+		const board = new Gameboard();
+		const ship = new Ship(2);
+
+		board.placeShip(ship, 0, 0);
+
+		ship.hit();
+		ship.hit();
+
+		expect(board.allShipsSunk()).toBe(true);
+	});
 });

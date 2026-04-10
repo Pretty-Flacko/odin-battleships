@@ -2,6 +2,7 @@ export default class Gameboard {
 	constructor(size = 10) {
 		this.size = size;
 		this.grid = this.createGrid(size);
+		this.ships = [];
 	}
 
 	createGrid(size) {
@@ -24,26 +25,9 @@ export default class Gameboard {
 	}
 
 	placeShip(ship, x, y, direction = "horizontal") {
-		if (
-			x < 0 ||
-			y < 0 ||
-			(direction === "horizontal" && x + ship.length > this.size) ||
-			(direction === "vertical" && y + ship.length > this.size)
-		) {
-			throw new Error("Ship is out of bounds");
-		}
+		const coords = this.#validatePlacement(ship.length, x, y, direction);
 
-		const coords = this.#getShipCoordinates(ship.length, x, y, direction);
-
-		for (const [cx, cy] of coords) {
-			if (this.grid[cy][cx].ship !== null) {
-				throw new Error("Cell is occupied");
-			}
-
-			if (this.#isAdjacentOccupied(cx, cy)) {
-				throw new Error("Too close to existing ship");
-			}
-		}
+		this.ships.push(ship);
 
 		for (const [cx, cy] of coords) {
 			this.grid[cy][cx].ship = ship;
@@ -75,6 +59,10 @@ export default class Gameboard {
 		}
 	}
 
+	allShipsSunk() {
+		return this.ships.every((ship) => ship.isSunk());
+	}
+
 	#getShipCoordinates(shipLength, x, y, direction) {
 		const coords = [];
 
@@ -83,6 +71,31 @@ export default class Gameboard {
 			const cy = direction === "vertical" ? y + i : y;
 
 			coords.push([cx, cy]);
+		}
+
+		return coords;
+	}
+
+	#validatePlacement(shipLength, x, y, direction) {
+		if (
+			x < 0 ||
+			y < 0 ||
+			(direction === "horizontal" && x + shipLength > this.size) ||
+			(direction === "vertical" && y + shipLength > this.size)
+		) {
+			throw new Error("Ship is out of bounds");
+		}
+
+		const coords = this.#getShipCoordinates(shipLength, x, y, direction);
+
+		for (const [cx, cy] of coords) {
+			if (this.grid[cy][cx].ship) {
+				throw new Error("Cell is occupied");
+			}
+
+			if (this.#isAdjacentOccupied(cx, cy)) {
+				throw new Error("Too close to existing ship");
+			}
 		}
 
 		return coords;
@@ -103,7 +116,7 @@ export default class Gameboard {
 				}
 
 				// check adjacent cells for a ship
-				if (this.grid[ny][nx].ship !== null) {
+				if (this.grid[ny][nx].ship) {
 					return true;
 				}
 			}
