@@ -27,4 +27,15 @@ describe("Player", () => {
 
 		expect(result).toBe("hit");
 	});
+
+	test("'computer' can generate valid attack targets", () => {
+		const cpu = new Player("computer");
+
+		const [x, y] = cpu.getRandomAttackTarget();
+
+		expect(x).toBeGreaterThanOrEqual(0);
+		expect(x).toBeLessThan(10);
+		expect(y).toBeGreaterThanOrEqual(0);
+		expect(y).toBeLessThan(10);
+	});
 });
