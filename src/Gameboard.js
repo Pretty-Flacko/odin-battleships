@@ -32,7 +32,7 @@ export default class Gameboard {
 			throw new Error("Ship is out of bounds");
 		}
 
-		const coords = this.#getShipCoordinates(ship, x, y, direction);
+		const coords = this.#getShipCoordinates(ship.length, x, y, direction);
 
 		for (const [cx, cy] of coords) {
 			if (this.grid[cy][cx] !== null) {
@@ -53,10 +53,10 @@ export default class Gameboard {
 		return this.grid[y][x] !== null;
 	}
 
-	#getShipCoordinates(ship, x, y, direction) {
+	#getShipCoordinates(shipLength, x, y, direction) {
 		const coords = [];
 
-		for (let i = 0; i < ship.length; i++) {
+		for (let i = 0; i < shipLength; i++) {
 			const cx = direction === "horizontal" ? x + i : x;
 			const cy = direction === "vertical" ? y + i : y;
 
