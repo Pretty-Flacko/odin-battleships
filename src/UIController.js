@@ -26,6 +26,14 @@ export default class UIController {
 					div.classList.add("ship");
 				}
 
+				if (cell.wasHit) {
+					if (cell.ship) {
+						div.classList.add("hit");
+					} else {
+						div.classList.add("miss");
+					}
+				}
+
 				div.dataset.x = x;
 				div.dataset.y = y;
 
