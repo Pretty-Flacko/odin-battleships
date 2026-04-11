@@ -1,4 +1,5 @@
 import Player from "./Player.js";
+import Ship from "./Ship.js";
 
 export default class GameController {
 	constructor() {
@@ -39,5 +40,18 @@ export default class GameController {
 		}
 
 		return null;
+	}
+
+	setupFleet(player) {
+		player.board.placeShip(new Ship(4), 0, 0, "horizontal");
+		player.board.placeShip(new Ship(3), 0, 2, "horizontal");
+		player.board.placeShip(new Ship(3), 2, 4, "horizontal");
+		player.board.placeShip(new Ship(2), 8, 0, "horizontal");
+		player.board.placeShip(new Ship(2), 8, 9, "horizontal");
+		player.board.placeShip(new Ship(2), 0, 6, "horizontal");
+		player.board.placeShip(new Ship(1), 7, 6, "horizontal");
+		player.board.placeShip(new Ship(1), 7, 4, "horizontal");
+		player.board.placeShip(new Ship(1), 5, 6, "horizontal");
+		player.board.placeShip(new Ship(1), 0, 9, "horizontal");
 	}
 }
