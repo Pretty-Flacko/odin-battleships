@@ -37,6 +37,14 @@ export default class UIController {
 					}
 				}
 
+				if (
+					isEnemy &&
+					this.game.currentPlayer.type === "human" &&
+					!cell.revealed
+				) {
+					div.classList.add("hoverable");
+				}
+
 				div.dataset.x = x;
 				div.dataset.y = y;
 
