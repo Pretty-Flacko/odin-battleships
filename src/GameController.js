@@ -15,12 +15,35 @@ export default class GameController {
 		this.currentDirection = "horizontal";
 	}
 
+	autoPlaceShips(player) {
+		const ships = this.placementFleet;
+
+		for (const length of ships) {
+			let placed = false;
+
+			while (!placed) {
+				const direction = Math.random() < 0.5 ? "horizontal" : "vertical";
+
+				const x = Math.floor(Math.random() * 10);
+				const y = Math.floor(Math.random() * 10);
+
+				const ship = new Ship(length);
+
+				try {
+					player.board.placeShip(ship, x, y, direction);
+					placed = true;
+				} catch {}
+			}
+		}
+
+		return { status: "ok" };
+	}
+
 	getNextShipLength() {
 		return this.placementFleet[this.currentShipIndex];
 	}
 
 	placeNextShip(x, y) {
-		console.log("placeNextShip works");
 		if (!this.placementMode) return { status: "invalid" };
 
 		const length = this.getNextShipLength();
@@ -105,18 +128,5 @@ export default class GameController {
 		}
 
 		return null;
-	}
-
-	setupFleet(player) {
-		player.board.placeShip(new Ship(4), 0, 0, "horizontal");
-		player.board.placeShip(new Ship(3), 0, 2, "horizontal");
-		player.board.placeShip(new Ship(3), 2, 4, "horizontal");
-		player.board.placeShip(new Ship(2), 8, 0, "horizontal");
-		player.board.placeShip(new Ship(2), 8, 9, "horizontal");
-		player.board.placeShip(new Ship(2), 0, 6, "horizontal");
-		player.board.placeShip(new Ship(1), 7, 6, "horizontal");
-		player.board.placeShip(new Ship(1), 7, 4, "horizontal");
-		player.board.placeShip(new Ship(1), 5, 6, "horizontal");
-		player.board.placeShip(new Ship(1), 0, 9, "horizontal");
 	}
 }

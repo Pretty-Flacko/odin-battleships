@@ -112,7 +112,6 @@ export default class UIController {
 	}
 
 	handlePlayerBoardClick(e) {
-		console.log("PLAYER CLICK HIT", this.game.placementMode);
 		if (!this.game.placementMode) return;
 
 		const cell = e.target.closest(".cell");
@@ -120,8 +119,6 @@ export default class UIController {
 
 		const x = Number(cell.dataset.x);
 		const y = Number(cell.dataset.y);
-
-		console.log("CLICK:", x, y);
 
 		const result = this.game.placeNextShip(x, y);
 
