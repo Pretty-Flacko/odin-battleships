@@ -13,6 +13,7 @@ export default class UIController {
 	render() {
 		this.renderBoard(this.game.player1.board, this.playerBoardEl, false);
 		this.renderBoard(this.game.player2.board, this.enemyBoardEl, true);
+		this.updateTurnIndicator();
 	}
 
 	renderBoard(board, container, isEnemy = false) {
@@ -65,7 +66,7 @@ export default class UIController {
 		}
 
 		while (this.game.isComputerTurn()) {
-			await this.delay(400);
+			await this.delay(1000);
 
 			result = this.game.playComputerTurn();
 
@@ -78,6 +79,20 @@ export default class UIController {
 				return;
 			}
 		}
+	}
+
+	updateTurnIndicator() {
+		const indicator = document.querySelector("#turn-indicator");
+
+		if (this.game.gameOver) {
+			indicator.textContent = "Game Over";
+			return;
+		}
+
+		indicator.textContent =
+			this.game.currentPlayer.type === "human"
+				? "Your turn"
+				: "Computer thinking...";
 	}
 
 	delay(ms) {
