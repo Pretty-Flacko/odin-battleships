@@ -70,7 +70,7 @@ export default class UIController {
 	}
 
 	async handleEnemyBoardClick(e) {
-		if (this.game.gameOver) return;
+		if (this.game.placementMode || this.game.gameOver) return;
 
 		const cell = e.target;
 		if (!cell.classList.contains("cell")) return;
@@ -107,6 +107,11 @@ export default class UIController {
 
 	updateTurnIndicator() {
 		const indicator = document.querySelector("#turn-indicator");
+
+		if (this.game.placementMode) {
+			indicator.textContent = "Place your ships";
+			return;
+		}
 
 		if (this.game.gameOver) {
 			indicator.textContent = "Game Over";
