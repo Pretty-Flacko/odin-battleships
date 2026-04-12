@@ -35,6 +35,11 @@ export default class GameController {
 		}
 	}
 
+	toggleDirection() {
+		this.currentDirection =
+			this.currentDirection === "horizontal" ? "vertical" : "horizontal";
+	}
+
 	switchTurn() {
 		this.currentPlayer =
 			this.currentPlayer === this.player1 ? this.player2 : this.player1;

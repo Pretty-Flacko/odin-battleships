@@ -5,9 +5,17 @@ export default class UIController {
 		this.playerBoardEl = document.querySelector("#player-board");
 		this.enemyBoardEl = document.querySelector("#enemy-board");
 
-		this.handleEnemyBoardClick = this.handleEnemyBoardClick.bind(this);
+		this.handlePlayerBoardClick = this.handlePlayerBoardClick.bind(this);
+		this.playerBoardEl.addEventListener("click", this.handlePlayerBoardClick);
 
+		this.handleEnemyBoardClick = this.handleEnemyBoardClick.bind(this);
 		this.enemyBoardEl.addEventListener("click", this.handleEnemyBoardClick);
+
+		this.rotateBtn = document.querySelector("#rotate-btn");
+		this.rotateBtn.addEventListener("click", () => this.game.toggleDirection());
+		window.addEventListener("keydown", (e) => {
+			if (e.key === "r") this.game.toggleDirection();
+		});
 	}
 
 	render() {
