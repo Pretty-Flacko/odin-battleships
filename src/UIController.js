@@ -58,8 +58,21 @@ export default class UIController {
 
 			this.update();
 
-			if (result.winner) {
-				alert(`${result.winner.type} wins!`);
+			if (result.type) {
+				alert(`${result.type} wins!`);
+				return;
+			}
+
+			if (this.game.currentPlayer.type === "computer") {
+				setTimeout(() => {
+					const aiResult = this.game.playTurn(x, y);
+
+					this.update();
+
+					if (aiResult.type) {
+						alert(`${result.type} wins!`);
+					}
+				}, 400);
 			}
 		});
 	}
