@@ -44,7 +44,7 @@ export default class UIController {
 		});
 	}
 
-	handleEnemyBoardClick(e) {
+	async handleEnemyBoardClick(e) {
 		if (this.game.gameOver) return;
 
 		const cell = e.target;
@@ -53,11 +53,9 @@ export default class UIController {
 		const x = Number(cell.dataset.x);
 		const y = Number(cell.dataset.y);
 
-		const result = this.game.playTurn(x, y);
+		let result = this.game.playTurn(x, y);
 
-		if (result === "invalid") {
-			return;
-		}
+		if (result.status === "invalid") return;
 
 		this.render();
 
@@ -66,17 +64,24 @@ export default class UIController {
 			return;
 		}
 
-		if (this.game.currentPlayer.type === "computer") {
-			setTimeout(() => {
-				const aiResult = this.game.computerTurn();
+		while (this.game.isComputerTurn()) {
+			await this.delay(400);
 
-				this.render();
+			result = this.game.playComputerTurn();
 
-				if (aiResult.winner) {
-					this.showWinner(aiResult.winner.type);
-				}
-			}, 400);
+			if (result.status === "invalid") return;
+
+			this.render();
+
+			if (result.winner) {
+				this.showWinner(result.winner.type);
+				return;
+			}
 		}
+	}
+
+	delay(ms) {
+		return new Promise((resolve) => setTimeout(resolve, ms));
 	}
 
 	showWinner(type) {

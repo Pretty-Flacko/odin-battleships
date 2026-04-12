@@ -16,15 +16,6 @@ export default class GameController {
 	}
 
 	playTurn(x, y) {
-		return this.executeAttack(x, y);
-	}
-
-	computerTurn() {
-		const [x, y] = this.currentPlayer.getRandomAttackTarget();
-		return this.executeAttack(x, y);
-	}
-
-	executeAttack(x, y) {
 		if (this.gameOver) {
 			return {
 				status: "invalid",
@@ -32,6 +23,19 @@ export default class GameController {
 			};
 		}
 
+		return this.resolveTurn(x, y);
+	}
+
+	playComputerTurn() {
+		const [x, y] = this.currentPlayer.getRandomAttackTarget();
+		return this.resolveTurn(x, y);
+	}
+
+	isComputerTurn() {
+		return this.currentPlayer.type === "computer";
+	}
+
+	resolveTurn(x, y) {
 		const enemy =
 			this.currentPlayer === this.player1 ? this.player2 : this.player1;
 
