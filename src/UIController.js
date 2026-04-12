@@ -32,6 +32,9 @@ export default class UIController {
 				if (cell.revealed) {
 					if (cell.ship) {
 						div.classList.add("hit");
+						if (cell.ship.isSunk()) {
+							div.classList.add("sunk");
+						}
 					} else {
 						div.classList.add("miss");
 					}

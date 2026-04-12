@@ -13,11 +13,32 @@
 	width: 30px;
 	height: 30px;
 	border: 1px solid #ccc;
+	position: relative;
 }
 
 .cell.hoverable:hover {
 	background-color: #0096ff4d;
 	cursor: pointer;
+}
+
+.cell.sunk::before,
+.cell.sunk::after {
+	content: "";
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 80%;
+	height: 2px;
+	background-color: #000;
+	transform-origin: center;
+}
+
+.cell.sunk::before {
+	transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.cell.sunk::after {
+	transform: translate(-50%, -50%) rotate(-45deg);
 }
 
 .ship {
