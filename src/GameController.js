@@ -8,6 +8,31 @@ export default class GameController {
 
 		this.gameOver = false;
 		this.currentPlayer = this.player1;
+
+		this.placementMode = true;
+		this.placementFleet = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1];
+		this.currentShipIndex = 0;
+		this.currentDirection = "horizontal";
+	}
+
+	placeNextShip(x, y) {
+		if (!this.placementMode) return { status: "invalid" };
+
+		const length = this.placementFleet[this.currentShipIndex];
+		const ship = new Ship(length);
+
+		try {
+			this.player1.board.placeShip(ship, x, y, this.currentDirection);
+			this.currentShipIndex++;
+
+			if (this.currentShipIndex >= this.placementFleet.length) {
+				this.placementMode = false;
+			}
+
+			return { status: "ok" };
+		} catch (e) {
+			return { status: "invalid", error: e.message };
+		}
 	}
 
 	switchTurn() {

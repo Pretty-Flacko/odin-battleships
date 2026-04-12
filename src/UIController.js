@@ -56,6 +56,19 @@ export default class UIController {
 		});
 	}
 
+	handlePlayerBoardClick(e) {
+		if (!this.game.placementMode) return;
+
+		const x = Number(e.target.dataset.x);
+		const y = Number(e.target.dataset.y);
+
+		const result = this.game.placeNextShip(x, y);
+
+		if (result.status === "ok") {
+			this.render();
+		}
+	}
+
 	async handleEnemyBoardClick(e) {
 		if (this.game.gameOver) return;
 
