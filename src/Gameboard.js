@@ -26,6 +26,7 @@ export default class Gameboard {
 
 	placeShip(ship, x, y, direction = "horizontal") {
 		const coords = this.#validatePlacement(ship.length, x, y, direction);
+		ship.coordinates = coords;
 
 		this.ships.push(ship);
 
@@ -52,9 +53,33 @@ export default class Gameboard {
 
 			if (targetCell.ship) {
 				targetCell.ship.hit();
+
+				if (targetCell.ship.isSunk()) {
+					this.revealSunkShip(targetCell.ship);
+				}
+
 				return "hit";
 			} else {
 				return "miss";
+			}
+		}
+	}
+
+	revealSunkShip(ship) {
+		const coords = ship.coordinates;
+
+		for (const [x, y] of coords) {
+			for (let dy = -1; dy <= 1; dy++) {
+				for (let dx = -1; dx <= 1; dx++) {
+					const nx = x + dx;
+					const ny = y + dy;
+
+					if (nx < 0 || ny < 0 || nx >= this.size || ny >= this.size) continue;
+
+					if (!this.grid[ny][nx].revealed) {
+						this.grid[ny][nx].revealed = true;
+					}
+				}
 			}
 		}
 	}
