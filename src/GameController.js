@@ -25,22 +25,35 @@ export default class GameController {
 	}
 
 	executeAttack(x, y) {
-		if (this.gameOver) return;
+		if (this.gameOver) {
+			return {
+				status: "invalid",
+				winner: null,
+			};
+		}
 
 		const enemy =
 			this.currentPlayer === this.player1 ? this.player2 : this.player1;
 
-		const result = this.currentPlayer.attack(enemy.board, x, y);
+		const status = this.currentPlayer.attack(enemy.board, x, y);
 
 		const winner = this.checkWinner();
 		if (winner) {
 			this.gameOver = true;
-			return winner;
+			return {
+				status,
+				winner,
+			};
 		}
 
-		if (result === "miss") {
+		if (status === "miss") {
 			this.switchTurn();
 		}
+
+		return {
+			status,
+			winner: null,
+		};
 	}
 
 	checkWinner() {
