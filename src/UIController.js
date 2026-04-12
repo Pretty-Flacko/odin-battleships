@@ -2,6 +2,10 @@ export default class UIController {
 	constructor(game) {
 		this.game = game;
 
+		this.hoverX = null;
+		this.hoverY = null;
+		this.previewCells = [];
+
 		this.playerBoardEl = document.querySelector("#player-board");
 		this.enemyBoardEl = document.querySelector("#enemy-board");
 
@@ -16,6 +20,23 @@ export default class UIController {
 		window.addEventListener("keydown", (e) => {
 			if (e.key === "r") this.game.toggleDirection();
 		});
+
+		this.playerBoardEl.addEventListener("mousemove", (e) => {
+			if (!this.game.placementMode) return;
+
+			const cell = e.target.closest(".cell");
+			if (!cell) return;
+
+			const x = Number(cell.dataset.x);
+			const y = Number(cell.dataset.y);
+
+			if (x === this.hoverX && y === this.hoverY) return;
+
+			this.hoverX = x;
+			this.hoverY = y;
+
+			this.render();
+		});
 	}
 
 	render() {
@@ -28,10 +49,17 @@ export default class UIController {
 		container.innerHTML = "";
 		container.classList.add("board");
 
+		const preview = !isEnemy ? this.getPreviewCells() : [];
+
 		board.grid.forEach((row, y) => {
 			row.forEach((cell, x) => {
 				const div = document.createElement("div");
 				div.classList.add("cell");
+
+				const key = `${x},${y}`;
+				if (preview && preview.includes(key)) {
+					div.classList.add("preview");
+				}
 
 				if (cell.ship && !isEnemy) {
 					div.classList.add("ship");
@@ -64,11 +92,36 @@ export default class UIController {
 		});
 	}
 
+	getPreviewCells() {
+		if (this.hoverX === null || this.hoverY === null) return [];
+
+		const length = this.game.getNextShipLength();
+		const dir = this.game.currentDirection;
+
+		const cells = [];
+
+		for (let i = 0; i < length; i++) {
+			const x = dir === "horizontal" ? this.hoverX + i : this.hoverX;
+			const y = dir === "vertical" ? this.hoverY + i : this.hoverY;
+
+			if (x >= 10 || y >= 10) return [];
+			cells.push(`${x},${y}`);
+		}
+
+		return cells;
+	}
+
 	handlePlayerBoardClick(e) {
+		console.log("PLAYER CLICK HIT", this.game.placementMode);
 		if (!this.game.placementMode) return;
 
-		const x = Number(e.target.dataset.x);
-		const y = Number(e.target.dataset.y);
+		const cell = e.target.closest(".cell");
+		if (!cell) return;
+
+		const x = Number(cell.dataset.x);
+		const y = Number(cell.dataset.y);
+
+		console.log("CLICK:", x, y);
 
 		const result = this.game.placeNextShip(x, y);
 

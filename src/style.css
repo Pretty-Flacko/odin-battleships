@@ -16,6 +16,10 @@
 	position: relative;
 }
 
+.cell.preview {
+	background-color: #0096ff59;
+}
+
 .cell.hoverable:hover {
 	background-color: #0096ff4d;
 	cursor: pointer;

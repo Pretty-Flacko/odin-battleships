@@ -15,10 +15,15 @@ export default class GameController {
 		this.currentDirection = "horizontal";
 	}
 
+	getNextShipLength() {
+		return this.placementFleet[this.currentShipIndex];
+	}
+
 	placeNextShip(x, y) {
+		console.log("placeNextShip works");
 		if (!this.placementMode) return { status: "invalid" };
 
-		const length = this.placementFleet[this.currentShipIndex];
+		const length = this.getNextShipLength();
 		const ship = new Ship(length);
 
 		try {
