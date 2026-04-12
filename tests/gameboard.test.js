@@ -14,11 +14,11 @@ describe("Gameboard", () => {
 
 		expect(board.grid[0][0]).toStrictEqual({
 			ship: null,
-			wasHit: false,
+			revealed: false,
 		});
 		expect(board.grid[5][7]).toStrictEqual({
 			ship: null,
-			wasHit: false,
+			revealed: false,
 		});
 	});
 
@@ -114,7 +114,7 @@ describe("Gameboard", () => {
 		const result = board.receiveAttack(0, 0);
 
 		expect(result).toBe("miss");
-		expect(board.grid[0][0].wasHit).toBe(true);
+		expect(board.grid[0][0].revealed).toBe(true);
 	});
 
 	test("sends 'hit' to the correct ship and returns 'hit'", () => {
@@ -126,7 +126,7 @@ describe("Gameboard", () => {
 		const result = board.receiveAttack(0, 0);
 
 		expect(result).toBe("hit");
-		expect(board.grid[0][0].wasHit).toBe(true);
+		expect(board.grid[0][0].revealed).toBe(true);
 		expect(ship.hits).toBe(1);
 	});
 

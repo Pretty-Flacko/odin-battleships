@@ -14,7 +14,7 @@ export default class Gameboard {
 			for (let x = 0; x < size; x++) {
 				row.push({
 					ship: null,
-					wasHit: false,
+					revealed: false,
 				});
 			}
 
@@ -45,10 +45,10 @@ export default class Gameboard {
 
 		const targetCell = this.grid[y][x];
 
-		if (targetCell.wasHit === true) {
+		if (targetCell.revealed === true) {
 			return "invalid";
 		} else {
-			targetCell.wasHit = true;
+			targetCell.revealed = true;
 
 			if (targetCell.ship) {
 				targetCell.ship.hit();

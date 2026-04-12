@@ -26,7 +26,7 @@ export default class UIController {
 					div.classList.add("ship");
 				}
 
-				if (cell.wasHit) {
+				if (cell.revealed) {
 					if (cell.ship) {
 						div.classList.add("hit");
 					} else {
