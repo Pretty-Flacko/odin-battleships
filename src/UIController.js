@@ -44,6 +44,8 @@ export default class UIController {
 
 	addListeners() {
 		this.enemyBoardEl.addEventListener("click", (e) => {
+			if (this.game.gameOver) return;
+
 			const cell = e.target;
 			if (!cell.classList.contains("cell")) return;
 
@@ -59,7 +61,7 @@ export default class UIController {
 			this.update();
 
 			if (result.type) {
-				alert(`${result.type} wins!`);
+				this.showWinner(result.type);
 				return;
 			}
 
@@ -70,11 +72,17 @@ export default class UIController {
 					this.update();
 
 					if (aiResult.type) {
-						alert(`${result.type} wins!`);
+						this.showWinner(result.type);
 					}
 				}, 400);
 			}
 		});
+	}
+
+	showWinner(type) {
+		const banner = document.querySelector("#winner-banner");
+		banner.textContent = `${type} wins!`;
+		banner.classList.remove("hidden");
 	}
 
 	update() {
