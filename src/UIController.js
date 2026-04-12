@@ -78,7 +78,7 @@ export default class UIController {
 
 			result = this.game.playComputerTurn();
 
-			if (result.status === "invalid") return;
+			if (result.status === "invalid") continue;
 
 			this.render();
 
