@@ -68,11 +68,6 @@ export default class GameController {
 			this.currentDirection === "horizontal" ? "vertical" : "horizontal";
 	}
 
-	switchTurn() {
-		this.currentPlayer =
-			this.currentPlayer === this.player1 ? this.player2 : this.player1;
-	}
-
 	playTurn(x, y) {
 		if (this.gameOver) {
 			return {
@@ -81,25 +76,25 @@ export default class GameController {
 			};
 		}
 
-		return this.resolveTurn(x, y);
+		return this.#resolveTurn(x, y);
 	}
 
 	playComputerTurn() {
 		const [x, y] = this.currentPlayer.getRandomAttackTarget();
-		return this.resolveTurn(x, y);
+		return this.#resolveTurn(x, y);
 	}
 
 	isComputerTurn() {
 		return this.currentPlayer.type === "computer";
 	}
 
-	resolveTurn(x, y) {
+	#resolveTurn(x, y) {
 		const enemy =
 			this.currentPlayer === this.player1 ? this.player2 : this.player1;
 
 		const status = this.currentPlayer.attack(enemy.board, x, y);
 
-		const winner = this.checkWinner();
+		const winner = this.#checkWinner();
 		if (winner) {
 			this.gameOver = true;
 			return {
@@ -109,7 +104,7 @@ export default class GameController {
 		}
 
 		if (status === "miss") {
-			this.switchTurn();
+			this.#switchTurn();
 		}
 
 		return {
@@ -118,7 +113,12 @@ export default class GameController {
 		};
 	}
 
-	checkWinner() {
+	#switchTurn() {
+		this.currentPlayer =
+			this.currentPlayer === this.player1 ? this.player2 : this.player1;
+	}
+
+	#checkWinner() {
 		if (this.player1.board.allShipsSunk()) {
 			return this.player2;
 		}
