@@ -46,7 +46,7 @@ export default class Gameboard {
 		const targetCell = this.grid[y][x];
 
 		if (targetCell.wasHit === true) {
-			throw new Error("Already attacked");
+			return "invalid";
 		} else {
 			targetCell.wasHit = true;
 
@@ -60,6 +60,8 @@ export default class Gameboard {
 	}
 
 	allShipsSunk() {
+		if (this.ships.length === 0) return false;
+
 		return this.ships.every((ship) => ship.isSunk());
 	}
 

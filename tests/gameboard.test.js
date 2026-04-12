@@ -135,9 +135,9 @@ describe("Gameboard", () => {
 
 		board.receiveAttack(0, 0);
 
-		expect(() => {
-			board.receiveAttack(0, 0);
-		}).toThrow("Already attacked");
+		const result = board.receiveAttack(0, 0);
+
+		expect(result).toBe("invalid");
 	});
 
 	test("reports 'false' if not all ships are sunk", () => {

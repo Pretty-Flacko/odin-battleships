@@ -52,6 +52,10 @@ export default class UIController {
 
 			const result = this.game.playTurn(x, y);
 
+			if (result === "invalid") {
+				return;
+			}
+
 			this.update();
 
 			if (result.winner) {
