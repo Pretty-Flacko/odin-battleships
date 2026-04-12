@@ -36,6 +36,28 @@ export default class GameController {
 		return result;
 	}
 
+	computerTurn() {
+		if (this.gameOver) return;
+
+		const enemy =
+			this.currentPlayer === this.player1 ? this.player2 : this.player1;
+
+		const [x, y] = this.currentPlayer.getRandomAttackTarget();
+		const result = this.currentPlayer.attack(enemy.board, x, y);
+
+		const winner = this.checkWinner();
+		if (winner) {
+			this.gameOver = true;
+			return winner;
+		}
+
+		if (result === "miss") {
+			this.switchTurn();
+		}
+
+		return result;
+	}
+
 	checkWinner() {
 		if (this.player1.board.allShipsSunk()) {
 			return this.player2;

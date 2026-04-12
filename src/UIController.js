@@ -67,12 +67,12 @@ export default class UIController {
 
 			if (this.game.currentPlayer.type === "computer") {
 				setTimeout(() => {
-					const aiResult = this.game.playTurn(x, y);
+					const aiResult = this.game.computerTurn();
 
 					this.update();
 
 					if (aiResult.type) {
-						this.showWinner(result.type);
+						this.showWinner(aiResult.type);
 					}
 				}, 400);
 			}
