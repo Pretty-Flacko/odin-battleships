@@ -6,34 +6,40 @@ export default class GameController {
 		this.placementFleet = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1];
 	}
 
-	startGame({ autoPlacePlayer = false } = {}) {
+	startSetup() {
 		this.player1 = new Player("human");
 		this.player2 = new Player("computer");
 
 		this.gameOver = false;
-		this.currentPlayer = this.player1;
-
 		this.placementMode = true;
+
 		this.currentShipIndex = 0;
 		this.currentDirection = "horizontal";
+		this.currentPlayer = null;
 
 		this.autoPlaceShips(this.player2);
+	}
 
-		if (autoPlacePlayer) {
-			this.autoPlaceShips(this.player1);
+	startGame() {
+		if (
+			this.isPlacementComplete(this.player1) &&
+			this.isPlacementComplete(this.player2)
+		) {
 			this.placementMode = false;
+			this.currentPlayer = this.player1;
 		}
 	}
 
-	autoPlaceShips(player) {
+	autoPlaceShips(player, startFromIndex = 0) {
 		const ships = this.placementFleet;
 
-		for (const length of ships) {
+		for (let i = startFromIndex; i < ships.length; i++) {
+			const length = ships[i];
 			let placed = false;
-
 			let attempts = 0;
 
 			while (!placed && attempts < 100) {
+				attempts++;
 				const direction = Math.random() < 0.5 ? "horizontal" : "vertical";
 
 				const x = Math.floor(Math.random() * 10);
@@ -51,6 +57,10 @@ export default class GameController {
 				throw new Error("Failed to place ships");
 			}
 		}
+
+		this.placementMode = false;
+
+		return { status: "ok" };
 	}
 
 	getNextShipLength() {
@@ -67,7 +77,7 @@ export default class GameController {
 			this.player1.board.placeShip(ship, x, y, this.currentDirection);
 			this.currentShipIndex++;
 
-			if (this.currentShipIndex >= this.placementFleet.length) {
+			if (this.isPlacementComplete()) {
 				this.placementMode = false;
 			}
 
@@ -75,6 +85,10 @@ export default class GameController {
 		} catch (e) {
 			return { status: "invalid", error: e.message };
 		}
+	}
+
+	isPlacementComplete(player) {
+		return player.board.ships.length >= this.placementFleet.length;
 	}
 
 	toggleDirection() {
