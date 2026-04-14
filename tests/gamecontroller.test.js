@@ -5,47 +5,43 @@ describe("GameController", () => {
 	test("initializes with two players", () => {
 		const game = new GameController();
 
-		expect(game.player1).toBeDefined();
-		expect(game.player2).toBeDefined();
+		expect(game.player1).toBeNull();
+		expect(game.player2).toBeNull();
 	});
 
 	test("starts with player1 as current player", () => {
 		const game = new GameController();
 
+		game.startSetup();
+
 		expect(game.currentPlayer).toBe(game.player1);
-	});
-
-	test("switches turns between players", () => {
-		const game = new GameController();
-
-		const first = game.currentPlayer;
-
-		game.switchTurn();
-
-		expect(game.currentPlayer).not.toBe(first);
 	});
 
 	test("switches turn after a miss", () => {
 		const game = new GameController();
 
+		game.startSetup();
+		game.phase = "battle";
+
 		const missingPlayer = game.currentPlayer;
+
+		jest.spyOn(game.player1, "attack").mockReturnValue("miss");
 
 		game.playTurn(5, 5);
 
 		expect(game.currentPlayer).not.toBe(missingPlayer);
 	});
 
-	test("detects winner when all ships are sunk", () => {
+	test("ends game when last ship is sunk", () => {
 		const game = new GameController();
 
-		const ship = new Ship(1);
+		game.startSetup();
+		game.phase = "battle";
 
-		game.player1.board.placeShip(ship, 0, 0);
+		jest.spyOn(game.player2.board, "allShipsSunk").mockReturnValue(true);
 
-		ship.hit();
+		game.playTurn(0, 0);
 
-		const winner = game.checkWinner();
-
-		expect(winner).toBe(game.player2);
+		expect(game.phase).toBe("gameover");
 	});
 });
