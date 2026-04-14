@@ -3,6 +3,10 @@ import Ship from "./Ship.js";
 
 export default class GameController {
 	constructor() {
+		this.placementFleet = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1];
+	}
+
+	startGame({ autoPlacePlayer = false } = {}) {
 		this.player1 = new Player("human");
 		this.player2 = new Player("computer");
 
@@ -10,9 +14,15 @@ export default class GameController {
 		this.currentPlayer = this.player1;
 
 		this.placementMode = true;
-		this.placementFleet = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1];
 		this.currentShipIndex = 0;
 		this.currentDirection = "horizontal";
+
+		this.autoPlaceShips(this.player2);
+
+		if (autoPlacePlayer) {
+			this.autoPlaceShips(this.player1);
+			this.placementMode = false;
+		}
 	}
 
 	autoPlaceShips(player) {
@@ -21,7 +31,9 @@ export default class GameController {
 		for (const length of ships) {
 			let placed = false;
 
-			while (!placed) {
+			let attempts = 0;
+
+			while (!placed && attempts < 100) {
 				const direction = Math.random() < 0.5 ? "horizontal" : "vertical";
 
 				const x = Math.floor(Math.random() * 10);
@@ -34,9 +46,11 @@ export default class GameController {
 					placed = true;
 				} catch {}
 			}
-		}
 
-		return { status: "ok" };
+			if (!placed) {
+				throw new Error("Failed to place ships");
+			}
+		}
 	}
 
 	getNextShipLength() {

@@ -21,6 +21,18 @@ export default class UIController {
 			if (e.key === "r") this.game.toggleDirection();
 		});
 
+		this.startGameBtn = document.querySelector("#start-game-btn");
+		this.startGameBtn.addEventListener("click", () => {
+			this.game.startGame();
+			this.render();
+		});
+
+		this.autoPlaceBtn = document.querySelector("#auto-place-btn");
+		this.autoPlaceBtn.addEventListener("click", () => {
+			this.game.startGame({ autoPlacePlayer: true });
+			this.render();
+		});
+
 		this.playerBoardEl.addEventListener("mousemove", (e) => {
 			if (!this.game.placementMode) return;
 
