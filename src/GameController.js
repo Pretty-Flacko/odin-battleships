@@ -4,32 +4,31 @@ import Ship from "./Ship.js";
 export default class GameController {
 	constructor() {
 		this.placementFleet = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1];
-		this.player1 = new Player("human");
-		this.player2 = new Player("computer");
-		this.currentPlayer = this.player1;
-		this.placementMode = true;
+
+		this.phase = "idle";
+
+		this.player1 = null;
+		this.player2 = null;
+		this.currentPlayer = null;
 	}
 
 	startSetup() {
-		this.gameOver = false;
-		this.placementMode = true;
+		this.player1 = new Player("human");
+		this.player2 = new Player("computer");
+
+		this.phase = "placement";
 
 		this.currentShipIndex = 0;
 		this.currentDirection = "horizontal";
+
 		this.currentPlayer = this.player1;
 
 		this.autoPlaceShips(this.player2);
 	}
 
-	tryStartBattle() {
-		if (
-			this.isPlacementComplete(this.player1) &&
-			this.isPlacementComplete(this.player2)
-		) {
-			this.placementMode = false;
-			this.currentPlayer = this.player1;
-		}
-	}
+	/* =========================
+	   PLACEMENT LOGIC
+	========================= */
 
 	autoPlaceShips(player, startFromIndex = 0) {
 		const ships = this.placementFleet;
@@ -67,7 +66,7 @@ export default class GameController {
 	}
 
 	placeNextShip(x, y) {
-		if (!this.placementMode) return { status: "invalid" };
+		if (this.phase !== "placement") return { status: "invalid" };
 
 		const length = this.getNextShipLength();
 		const ship = new Ship(length);
@@ -77,7 +76,7 @@ export default class GameController {
 			this.currentShipIndex++;
 
 			if (this.isPlacementComplete()) {
-				this.placementMode = false;
+				this.#tryStartBattle();
 			}
 
 			return { status: "ok" };
@@ -95,8 +94,26 @@ export default class GameController {
 			this.currentDirection === "horizontal" ? "vertical" : "horizontal";
 	}
 
+	/* =========================
+	   BATTLE START
+	========================= */
+
+	#tryStartBattle() {
+		if (
+			this.isPlacementComplete(this.player1) &&
+			this.isPlacementComplete(this.player2)
+		) {
+			this.phase = "battle";
+			this.currentPlayer = this.player1;
+		}
+	}
+
+	/* =========================
+	   TURN SYSTEM
+	========================= */
+
 	playTurn(x, y) {
-		if (this.gameOver) {
+		if (this.phase !== "battle") {
 			return {
 				status: "invalid",
 				winner: null,
@@ -123,7 +140,7 @@ export default class GameController {
 
 		const winner = this.#checkWinner();
 		if (winner) {
-			this.gameOver = true;
+			this.phase = "gameover";
 			return {
 				status,
 				winner,
