@@ -101,7 +101,7 @@ export default class UIController {
 		}
 
 		while (this.game.isComputerTurn()) {
-			await this.delay(1000);
+			await this.delay(400);
 
 			result = this.game.playComputerTurn();
 
@@ -147,13 +147,13 @@ export default class UIController {
 	========================= */
 
 	render() {
+		this.updateUIState();
+		this.updateTurnIndicator();
+
 		if (this.game.phase === "idle") return;
 
 		this.renderBoard(this.game.player1.board, this.playerBoardEl, false);
 		this.renderBoard(this.game.player2.board, this.enemyBoardEl, true);
-
-		this.updateUIState();
-		this.updateTurnIndicator();
 	}
 
 	renderBoard(board, container, isEnemy = false) {
@@ -231,7 +231,6 @@ export default class UIController {
 	updateUIState() {
 		const isPlacement = this.game.phase === "placement";
 
-		this.startGameBtn.style.display = isPlacement ? "block" : "none";
 		this.autoPlaceBtn.style.display = isPlacement ? "block" : "none";
 		this.rotateBtn.style.display = isPlacement ? "block" : "none";
 	}

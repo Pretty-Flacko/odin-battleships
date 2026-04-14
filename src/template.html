@@ -7,13 +7,28 @@
 	</head>
 	<body>
 		<div id="game">
-			<button id="start-game-btn">Start New Game</button>
-			<div id="player-board"></div>
-			<div id="enemy-board"></div>
+			<header id="hud">
+				<div id="controls">
+					<button id="start-game-btn">Start New Game</button>
+					<button id="rotate-btn">Rotate</button>
+					<button id="auto-place-btn">Auto Place</button>
+				</div>
+				<div id="turn-indicator"></div>
+			</header>
+
+			<main id="boards">
+				<div class="board-wrapper">
+					<h3>You</h3>
+					<div id="player-board"></div>
+				</div>
+
+				<div class="board-wrapper">
+					<h3>Enemy</h3>
+					<div id="enemy-board"></div>
+				</div>
+			</main>
+
 			<div id="winner-banner" class="hidden"></div>
-			<div id="turn-indicator"></div>
-			<button id="rotate-btn">Rotate</button>
-			<button id="auto-place-btn">Auto Place</button>
 		</div>
 	</body>
 </html>
