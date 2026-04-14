@@ -4,23 +4,24 @@ import Ship from "./Ship.js";
 export default class GameController {
 	constructor() {
 		this.placementFleet = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1];
+		this.player1 = new Player("human");
+		this.player2 = new Player("computer");
+		this.currentPlayer = this.player1;
+		this.placementMode = true;
 	}
 
 	startSetup() {
-		this.player1 = new Player("human");
-		this.player2 = new Player("computer");
-
 		this.gameOver = false;
 		this.placementMode = true;
 
 		this.currentShipIndex = 0;
 		this.currentDirection = "horizontal";
-		this.currentPlayer = null;
+		this.currentPlayer = this.player1;
 
 		this.autoPlaceShips(this.player2);
 	}
 
-	startGame() {
+	tryStartBattle() {
 		if (
 			this.isPlacementComplete(this.player1) &&
 			this.isPlacementComplete(this.player2)
@@ -57,8 +58,6 @@ export default class GameController {
 				throw new Error("Failed to place ships");
 			}
 		}
-
-		this.placementMode = false;
 
 		return { status: "ok" };
 	}

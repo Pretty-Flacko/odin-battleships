@@ -14,22 +14,28 @@ export default class UIController {
 
 		this.handleEnemyBoardClick = this.handleEnemyBoardClick.bind(this);
 		this.enemyBoardEl.addEventListener("click", this.handleEnemyBoardClick);
-
-		this.rotateBtn = document.querySelector("#rotate-btn");
-		this.rotateBtn.addEventListener("click", () => this.game.toggleDirection());
-		window.addEventListener("keydown", (e) => {
-			if (e.key === "r") this.game.toggleDirection();
-		});
-
 		this.startGameBtn = document.querySelector("#start-game-btn");
 		this.startGameBtn.addEventListener("click", () => {
-			this.game.startGame();
+			this.game.startSetup();
 			this.render();
+		});
+
+		this.rotateBtn = document.querySelector("#rotate-btn");
+		this.rotateBtn.addEventListener("click", () => {
+			this.game.toggleDirection();
+			this.render();
+		});
+		window.addEventListener("keydown", (e) => {
+			if (e.key === "r") {
+				this.game.toggleDirection();
+				this.render();
+			}
 		});
 
 		this.autoPlaceBtn = document.querySelector("#auto-place-btn");
 		this.autoPlaceBtn.addEventListener("click", () => {
-			this.game.startGame({ autoPlacePlayer: true });
+			this.game.autoPlaceShips(this.game.player1, this.game.currentShipIndex);
+			this.game.tryStartBattle();
 			this.render();
 		});
 
@@ -54,6 +60,7 @@ export default class UIController {
 	render() {
 		this.renderBoard(this.game.player1.board, this.playerBoardEl, false);
 		this.renderBoard(this.game.player2.board, this.enemyBoardEl, true);
+		this.updateUIState();
 		this.updateTurnIndicator();
 	}
 
@@ -135,6 +142,7 @@ export default class UIController {
 		const result = this.game.placeNextShip(x, y);
 
 		if (result.status === "ok") {
+			this.game.tryStartBattle();
 			this.render();
 		}
 	}
@@ -172,6 +180,18 @@ export default class UIController {
 				this.showWinner(result.winner.type);
 				return;
 			}
+		}
+	}
+
+	updateUIState() {
+		if (this.game.placementMode) {
+			this.startGameBtn.style.display = "block";
+			this.autoPlaceBtn.style.display = "block";
+			this.rotateBtn.style.display = "block";
+		} else {
+			this.startGameBtn.style.display = "none";
+			this.autoPlaceBtn.style.display = "none";
+			this.rotateBtn.style.display = "none";
 		}
 	}
 
