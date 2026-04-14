@@ -54,6 +54,9 @@ export default class UIController {
 		this.playerBoardEl.addEventListener("mousemove", (e) => {
 			this.handleHover(e);
 		});
+		this.playerBoardEl.addEventListener("mouseleave", () => {
+			this.handleLeave();
+		});
 	}
 
 	/* =========================
@@ -126,6 +129,15 @@ export default class UIController {
 
 		this.hoverX = x;
 		this.hoverY = y;
+
+		this.render();
+	}
+
+	handleLeave() {
+		if (this.hoverX === null && this.hoverY === null) return;
+
+		this.hoverX = null;
+		this.hoverY = null;
 
 		this.render();
 	}
