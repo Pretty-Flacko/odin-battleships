@@ -24,6 +24,13 @@ export default class GameController {
 		this.currentPlayer = this.player1;
 
 		this.autoPlaceShips(this.player2);
+
+		this.aiState = {
+			mode: "hunt",
+			targets: [],
+			visited: new Set(),
+			lastHit: null,
+		};
 	}
 
 	/* =========================
@@ -124,35 +131,93 @@ export default class GameController {
 	}
 
 	playComputerTurn() {
-		const [x, y] = this.currentPlayer.getRandomAttackTarget();
-		return this.#resolveTurn(x, y);
+		const [x, y] = this.getComputerMove();
+
+		const result = this.#resolveTurn(x, y);
+
+		this.#updateAI(x, y, result.status, result.sunk);
+
+		return result;
 	}
 
 	isComputerTurn() {
 		return this.currentPlayer.type === "computer";
 	}
 
+	getComputerMove() {
+		const state = this.aiState;
+
+		if (state.mode === "target" && state.targets.length) {
+			return state.targets.pop();
+		}
+
+		while (true) {
+			const x = Math.floor(Math.random() * 10);
+			const y = Math.floor(Math.random() * 10);
+
+			const key = `${x},${y}`;
+
+			if (!state.visited.has(key)) {
+				return [x, y];
+			}
+		}
+	}
+
+	#updateAI(x, y, status, sunk) {
+		const state = this.aiState;
+
+		state.visited.add(`${x},${y}`);
+
+		if (sunk) {
+			state.mode = "hunt";
+			state.targets = [];
+			return;
+		}
+
+		if (status === "hit") {
+			state.mode = "target";
+
+			const neighbors = this.#getNeighbors(x, y);
+
+			for (const [nx, ny] of neighbors) {
+				const key = `${nx},${ny}`;
+				if (!state.visited.has(key)) {
+					state.targets.push([nx, ny]);
+				}
+			}
+		}
+	}
+
+	#getNeighbors(x, y) {
+		return [
+			[x + 1, y],
+			[x - 1, y],
+			[x, y + 1],
+			[x, y - 1],
+		].filter(([x, y]) => x >= 0 && x < 10 && y >= 0 && y < 10);
+	}
+
 	#resolveTurn(x, y) {
 		const enemy =
 			this.currentPlayer === this.player1 ? this.player2 : this.player1;
 
-		const status = this.currentPlayer.attack(enemy.board, x, y);
+		const result = this.currentPlayer.attack(enemy.board, x, y);
 
 		const winner = this.#checkWinner();
 		if (winner) {
 			this.phase = "gameover";
 			return {
-				status,
+				status: result.status,
 				winner,
 			};
 		}
 
-		if (status === "miss") {
+		if (result.status === "miss") {
 			this.#switchTurn();
 		}
 
 		return {
-			status,
+			status: result.status,
 			winner: null,
 		};
 	}
