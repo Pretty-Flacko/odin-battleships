@@ -1,4 +1,6 @@
 #game {
+	max-width: 900px;
+	margin: 0 auto;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -9,36 +11,31 @@
 
 /* ================= HEADER ================= */
 
-#hud {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	gap: 10px;
-}
-
-#controls {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	gap: 10px;
-}
-
-#controls button {
-	padding: 8px 12px;
-	border: none;
-	border-radius: 6px;
-	background-color: #222;
-	color: #fff;
-	cursor: pointer;
-}
-
-#controls button:hover {
-	background-color: #444;
+#status-bar {
+	font-size: 18px;
+	font-weight: 700;
 }
 
 #turn-indicator {
-	font-size: 18px;
-	font-weight: 700;
+	padding: 12px 16px;
+	border-radius: 6px;
+	color: #fff;
+}
+
+#turn-indicator.player-turn {
+	background-color: #2ecc71;
+}
+
+#turn-indicator.computer-turn {
+	background-color: #f39c12;
+}
+
+#turn-indicator.placement {
+	background-color: #3498db;
+}
+
+#turn-indicator.game-over {
+	background-color: #e74c3c;
 }
 
 /* ================= BOARDS ================= */
@@ -57,22 +54,48 @@
 
 .board-wrapper h3 {
 	margin: 0;
+	font-size: 14px;
+	opacity: 0.7;
 }
 
 .board {
 	display: grid;
-	grid-template-columns: repeat(10, 30px);
-	grid-template-rows: repeat(10, 30px);
+	grid-template-columns: repeat(10, 1fr);
+	grid-template-rows: repeat(10, 1fr);
+	width: 300px;
+	height: 300px;
 	border: 2px solid #333;
 	background-color: #ccc;
 	gap: 1px;
 }
 
+/* ================ CONTROLS ================ */
+
+#controls {
+	display: flex;
+	gap: 10px;
+	justify-content: center;
+}
+
+#controls button {
+	padding: 12px 16px;
+	min-width: 140px;
+	border: none;
+	border-radius: 6px;
+	background-color: #222;
+	color: #fff;
+	cursor: pointer;
+}
+
+#controls button:hover {
+	background-color: #444;
+}
+
 /* ================= CELLS ================= */
 
 .cell {
-	width: 30px;
-	height: 30px;
+	width: 100%;
+	height: 100%;
 	background-color: #fff;
 	position: relative;
 }
@@ -86,15 +109,15 @@
 	cursor: pointer;
 }
 
-.ship {
+.cell.ship {
 	background-color: #808080;
 }
 
-.hit {
+.cell.hit {
 	background-color: #ff4d4d;
 }
 
-.miss {
+.cell.miss {
 	background-color: #bcdff5;
 }
 
@@ -124,14 +147,16 @@
 
 #winner-banner {
 	position: fixed;
-	top: 20px;
+	top: 30%;
 	left: 50%;
-	transform: translate(-50%);
-	padding: 12px 24px;
+	transform: translate(-50%, -30%);
+	padding: 16px 28px;
 	background-color: #000;
 	color: #fff;
-	border-radius: 8px;
-	font-size: 18px;
+	border-radius: 10px;
+	font-size: 22px;
+	font-weight: 700;
+	box-shadow: 0 0 30px #00000080;
 	z-index: 1000;
 }
 

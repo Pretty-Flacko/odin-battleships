@@ -6,6 +6,8 @@ export default class UIController {
 		this.hoverY = null;
 		this.previewCells = [];
 
+		this.boardsEl = document.querySelector("#boards");
+		this.bannerEl = document.querySelector("#winner-banner");
 		this.playerBoardEl = document.querySelector("#player-board");
 		this.enemyBoardEl = document.querySelector("#enemy-board");
 
@@ -19,6 +21,8 @@ export default class UIController {
 
 		this.startGameBtn.addEventListener("click", () => {
 			this.game.startSetup();
+			this.bannerEl.textContent = "";
+			this.bannerEl.classList.add("hidden");
 			this.render();
 		});
 
@@ -231,6 +235,7 @@ export default class UIController {
 	updateUIState() {
 		const isPlacement = this.game.phase === "placement";
 
+		this.boardsEl.style.display = this.game.phase === "idle" ? "none" : "flex";
 		this.autoPlaceBtn.style.display = isPlacement ? "block" : "none";
 		this.rotateBtn.style.display = isPlacement ? "block" : "none";
 	}
@@ -238,18 +243,30 @@ export default class UIController {
 	updateTurnIndicator() {
 		const indicator = document.querySelector("#turn-indicator");
 
+		indicator.classList.remove(
+			"player-turn",
+			"computer-turn",
+			"game-over",
+			"placement",
+		);
+
 		switch (this.game.phase) {
 			case "placement":
 				indicator.textContent = "Place your ships";
+				indicator.classList.add("placement");
 				break;
 			case "battle":
-				indicator.textContent =
-					this.game.currentPlayer.type === "human"
-						? "Your turn"
-						: "Computer thinking...";
+				if (this.game.currentPlayer.type === "human") {
+					indicator.textContent = "Your turn";
+					indicator.classList.add("player-turn");
+				} else {
+					indicator.textContent = "Computer thinking...";
+					indicator.classList.add("computer-turn");
+				}
 				break;
 			case "gameover":
 				indicator.textContent = "Game Over";
+				indicator.classList.add("game-over");
 				break;
 			default:
 				indicator.textContent = "";
@@ -265,8 +282,9 @@ export default class UIController {
 	}
 
 	showWinner(type) {
-		const banner = document.querySelector("#winner-banner");
-		banner.textContent = `${type} wins!`;
-		banner.classList.remove("hidden");
+		const formatted = type.charAt(0).toUpperCase() + type.slice(1);
+
+		this.bannerEl.textContent = `${formatted} wins!`;
+		this.bannerEl.classList.remove("hidden");
 	}
 }

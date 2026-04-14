@@ -7,13 +7,9 @@
 	</head>
 	<body>
 		<div id="game">
-			<header id="hud">
-				<div id="controls">
-					<button id="start-game-btn">Start New Game</button>
-					<button id="rotate-btn">Rotate</button>
-					<button id="auto-place-btn">Auto Place</button>
-				</div>
+			<header id="status-bar">
 				<div id="turn-indicator"></div>
+				<div id="winner-banner" class="hidden"></div>
 			</header>
 
 			<main id="boards">
@@ -28,7 +24,11 @@
 				</div>
 			</main>
 
-			<div id="winner-banner" class="hidden"></div>
+			<footer id="controls">
+				<button id="start-game-btn">Start New Game</button>
+				<button id="rotate-btn">Rotate (R)</button>
+				<button id="auto-place-btn">Auto Place</button>
+			</footer>
 		</div>
 	</body>
 </html>
