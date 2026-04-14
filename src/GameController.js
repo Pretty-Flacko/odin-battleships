@@ -76,7 +76,7 @@ export default class GameController {
 			this.currentShipIndex++;
 
 			if (this.isPlacementComplete()) {
-				this.#tryStartBattle();
+				this.tryStartBattle();
 			}
 
 			return { status: "ok" };
@@ -98,7 +98,7 @@ export default class GameController {
 	   BATTLE START
 	========================= */
 
-	#tryStartBattle() {
+	tryStartBattle() {
 		if (
 			this.isPlacementComplete(this.player1) &&
 			this.isPlacementComplete(this.player2)
