@@ -1,3 +1,4 @@
+import { experiments } from "webpack";
 import Gameboard from "../src/Gameboard.js";
 import Ship from "../src/Ship.js";
 
@@ -113,7 +114,8 @@ describe("Gameboard", () => {
 
 		const result = board.receiveAttack(0, 0);
 
-		expect(result).toBe("miss");
+		expect(result.status).toBe("miss");
+		expect(result.sunk).toBe(false);
 		expect(board.grid[0][0].revealed).toBe(true);
 	});
 
@@ -125,7 +127,7 @@ describe("Gameboard", () => {
 
 		const result = board.receiveAttack(0, 0);
 
-		expect(result).toBe("hit");
+		expect(result.status).toBe("hit");
 		expect(board.grid[0][0].revealed).toBe(true);
 		expect(ship.hits).toBe(1);
 	});
@@ -137,7 +139,7 @@ describe("Gameboard", () => {
 
 		const result = board.receiveAttack(0, 0);
 
-		expect(result).toBe("invalid");
+		expect(result.status).toBe("invalid");
 	});
 
 	test("reports 'false' if not all ships are sunk", () => {

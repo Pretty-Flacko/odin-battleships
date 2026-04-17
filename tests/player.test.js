@@ -25,7 +25,7 @@ describe("Player", () => {
 
 		const result = player1.attack(player2.board, 0, 0);
 
-		expect(result).toBe("hit");
+		expect(result.status).toBe("hit");
 	});
 
 	test("'computer' can generate valid attack targets", () => {

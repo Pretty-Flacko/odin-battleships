@@ -25,7 +25,10 @@ describe("GameController", () => {
 
 		const missingPlayer = game.currentPlayer;
 
-		jest.spyOn(game.player1, "attack").mockReturnValue("miss");
+		jest.spyOn(game.player1, "attack").mockReturnValue({
+			status: "miss",
+			sunk: false,
+		});
 
 		game.playTurn(5, 5);
 
