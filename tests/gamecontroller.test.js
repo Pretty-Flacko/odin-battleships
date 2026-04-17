@@ -11,7 +11,6 @@ describe("GameController", () => {
 
 	test("starts with player1 as current player", () => {
 		const game = new GameController();
-
 		game.startSetup();
 
 		expect(game.currentPlayer).toBe(game.player1);
@@ -19,7 +18,6 @@ describe("GameController", () => {
 
 	test("switches turn after a miss", () => {
 		const game = new GameController();
-
 		game.startSetup();
 		game.phase = "battle";
 
@@ -37,7 +35,6 @@ describe("GameController", () => {
 
 	test("ends game when last ship is sunk", () => {
 		const game = new GameController();
-
 		game.startSetup();
 		game.phase = "battle";
 
@@ -46,5 +43,25 @@ describe("GameController", () => {
 		game.playTurn(0, 0);
 
 		expect(game.phase).toBe("gameover");
+	});
+});
+
+describe("GameController AI", () => {
+	test("AI switches from 'hunt' to 'target' on first hit", () => {
+		const game = new GameController();
+		game.startSetup();
+		game.phase = "battle";
+
+		game.aiState.mode = "hunt";
+
+		jest.spyOn(game.currentPlayer, "attack").mockReturnValue({
+			status: "hit",
+			sunk: false,
+		});
+
+		game.playComputerTurn();
+
+		expect(game.aiState.mode).toBe("target");
+		expect(game.aiState.originHit).not.toBeNull();
 	});
 });
