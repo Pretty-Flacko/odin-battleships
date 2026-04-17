@@ -6,10 +6,6 @@ export default class GameController {
 		this.placementFleet = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1];
 
 		this.phase = "idle";
-
-		this.player1 = null;
-		this.player2 = null;
-		this.currentPlayer = null;
 	}
 
 	startSetup() {
@@ -42,21 +38,15 @@ export default class GameController {
 		const ships = this.placementFleet;
 
 		for (let i = startFromIndex; i < ships.length; i++) {
-			const length = ships[i];
 			let placed = false;
-			let attempts = 0;
 
-			while (!placed && attempts < 100) {
-				attempts++;
+			for (let attempts = 0; attempts < 100 && !placed; attempts++) {
 				const direction = Math.random() < 0.5 ? "horizontal" : "vertical";
-
 				const x = Math.floor(Math.random() * 10);
 				const y = Math.floor(Math.random() * 10);
 
-				const ship = new Ship(length);
-
 				try {
-					player.board.placeShip(ship, x, y, direction);
+					player.board.placeShip(new Ship(ships[i]), x, y, direction);
 					placed = true;
 				} catch {}
 			}
@@ -76,14 +66,13 @@ export default class GameController {
 	placeNextShip(x, y) {
 		if (this.phase !== "placement") return { status: "invalid" };
 
-		const length = this.getNextShipLength();
-		const ship = new Ship(length);
-
 		try {
+			const ship = new Ship(this.getNextShipLength());
+
 			this.player1.board.placeShip(ship, x, y, this.currentDirection);
 			this.currentShipIndex++;
 
-			if (this.isPlacementComplete()) {
+			if (this.isPlacementComplete(this.player1)) {
 				this.tryStartBattle();
 			}
 
@@ -131,12 +120,37 @@ export default class GameController {
 		return this.#resolveTurn(x, y);
 	}
 
+	/* =========================
+	   AI LOGIC
+	========================= */
+
 	playComputerTurn() {
+		let state = this.aiState;
+		console.log("AI STATE", {
+			mode: state.mode,
+			direction: state.direction,
+			directionStep: state.directionStep,
+			originHit: state.originHit,
+			lastHit: state.lastHit,
+			neighbors: state.neighbors?.length,
+		});
+
 		const [x, y] = this.getComputerMove();
+
+		console.log("AI PICK", x, y);
 
 		const result = this.#resolveTurn(x, y);
 
+		console.log("[AI RESULT]", {
+			x,
+			y,
+			status: result.status,
+			sunk: result.sunk,
+		});
+
 		this.#updateAI(x, y, result.status, result.sunk);
+
+		console.log("[AI STATE AFTER]", JSON.parse(JSON.stringify(this.aiState)));
 
 		return result;
 	}
@@ -147,27 +161,39 @@ export default class GameController {
 
 	getComputerMove() {
 		const state = this.aiState;
-		let x = null;
-		let y = null;
 
 		if (state.mode === "hunt") {
-			x = Math.floor(Math.random() * 10);
-			y = Math.floor(Math.random() * 10);
-		} else if (state.mode === "target") {
+			return [Math.floor(Math.random() * 10), Math.floor(Math.random() * 10)];
+		}
+
+		if (state.mode === "target") {
 			if (state.direction) {
-				if (state.direction === "horizontal") {
-					x = state.lastHit.x + state.directionStep;
-					y = state.lastHit.y;
-				} else {
-					x = state.lastHit.x;
-					y = state.lastHit.y + state.directionStep;
-				}
-				if (x < 0 || x >= 10 || y < 0 || y >= 10) {
-					return this.getComputerMove();
-				}
-			} else if (!state.direction) {
-				return state.neighbors.pop();
+				return this.#getDirectionalMove();
 			}
+
+			const move = state.neighbors.pop();
+			if (move) return move;
+		}
+	}
+
+	#getDirectionalMove() {
+		const state = this.aiState;
+		let x;
+		let y;
+
+		if (state.direction === "horizontal") {
+			x = state.lastHit.x + state.directionStep;
+			y = state.lastHit.y;
+		} else {
+			x = state.lastHit.x;
+			y = state.lastHit.y + state.directionStep;
+		}
+
+		if (x < 0 || x >= 10 || y < 0 || y >= 10) {
+			state.directionStep *= -1;
+			state.lastHit = state.originHit;
+
+			return this.#getDirectionalMove();
 		}
 
 		return [x, y];
@@ -180,12 +206,13 @@ export default class GameController {
 			state.mode = "hunt";
 			state.originHit = null;
 			state.lastHit = null;
-			state.direction = null;
 			return;
 		}
 
 		if (status === "hit") {
 			state.lastHit = { x, y };
+
+			//Already targeting, determine direction
 			if (state.mode === "target" && !state.direction) {
 				if (state.lastHit.x === state.originHit.x) {
 					state.direction = "vertical";
@@ -194,7 +221,10 @@ export default class GameController {
 					state.direction = "horizontal";
 					state.directionStep = state.lastHit.x > state.originHit.x ? 1 : -1;
 				}
-			} else if (state.mode === "hunt") {
+			}
+
+			//First hit, switch to target mode
+			else if (state.mode === "hunt") {
 				state.mode = "target";
 				state.originHit = { x, y };
 				state.direction = null;
@@ -202,7 +232,7 @@ export default class GameController {
 			}
 		}
 
-		if (status === "miss") {
+		if (status === "miss" || status === "invalid") {
 			if (state.mode === "target") {
 				if (state.direction) {
 					state.lastHit = state.originHit;
