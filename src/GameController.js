@@ -22,6 +22,7 @@ export default class GameController {
 		this.autoPlaceShips(this.player2);
 
 		this.aiState = {
+			huntMoves: this.#generateAllMoves(),
 			mode: "hunt",
 			originHit: null,
 			lastHit: null,
@@ -163,7 +164,7 @@ export default class GameController {
 		const state = this.aiState;
 
 		if (state.mode === "hunt") {
-			return [Math.floor(Math.random() * 10), Math.floor(Math.random() * 10)];
+			return state.huntMoves.pop();
 		}
 
 		if (state.mode === "target") {
@@ -174,6 +175,24 @@ export default class GameController {
 			const move = state.neighbors.pop();
 			if (move) return move;
 		}
+	}
+
+	#generateAllMoves() {
+		const moves = [];
+
+		for (let y = 0; y < 10; y++) {
+			for (let x = 0; x < 10; x++) {
+				moves.push([x, y]);
+			}
+		}
+
+		for (let i = moves.length - 1; i > 0; i--) {
+			const j = Math.floor(Math.random() * (i + 1));
+			[moves[i], moves[j]] = [moves[j], moves[i]];
+		}
+
+		console.log(moves);
+		return moves;
 	}
 
 	#getDirectionalMove() {
