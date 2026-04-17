@@ -2,11 +2,12 @@ import GameController from "../src/GameController.js";
 import Ship from "../src/Ship.js";
 
 describe("GameController", () => {
-	test("initializes with two players", () => {
+	test("initializes at idle phase, without players", () => {
 		const game = new GameController();
 
-		expect(game.player1).toBeNull();
-		expect(game.player2).toBeNull();
+		expect(game.phase).toBe("idle");
+		expect(game.player1).not.toBeDefined();
+		expect(game.player2).not.toBeDefined();
 	});
 
 	test("starts with player1 as current player", () => {
