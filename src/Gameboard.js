@@ -46,7 +46,7 @@ export default class Gameboard {
 
 		const targetCell = this.grid[y][x];
 
-		if (targetCell.revealed === true) {
+		if (targetCell.revealed) {
 			return { status: "invalid", sunk: false };
 		} else {
 			targetCell.revealed = true;
@@ -56,9 +56,10 @@ export default class Gameboard {
 
 				if (targetCell.ship.isSunk()) {
 					this.revealSunkShip(targetCell.ship);
+					return { status: "hit", sunk: true };
 				}
 
-				return { status: "hit", sunk: true };
+				return { status: "hit", sunk: false };
 			} else {
 				return { status: "miss", sunk: false };
 			}

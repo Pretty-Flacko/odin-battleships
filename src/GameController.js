@@ -27,9 +27,10 @@ export default class GameController {
 
 		this.aiState = {
 			mode: "hunt",
-			targets: [],
-			visited: new Set(),
+			originHit: null,
 			lastHit: null,
+			direction: null,
+			directionStep: null,
 		};
 	}
 
@@ -146,43 +147,66 @@ export default class GameController {
 
 	getComputerMove() {
 		const state = this.aiState;
+		let x = null;
+		let y = null;
 
-		if (state.mode === "target" && state.targets.length) {
-			return state.targets.pop();
-		}
-
-		while (true) {
-			const x = Math.floor(Math.random() * 10);
-			const y = Math.floor(Math.random() * 10);
-
-			const key = `${x},${y}`;
-
-			if (!state.visited.has(key)) {
-				return [x, y];
+		if (state.mode === "hunt") {
+			x = Math.floor(Math.random() * 10);
+			y = Math.floor(Math.random() * 10);
+		} else if (state.mode === "target") {
+			if (state.direction) {
+				if (state.direction === "horizontal") {
+					x = state.lastHit.x + state.directionStep;
+					y = state.lastHit.y;
+				} else {
+					x = state.lastHit.x;
+					y = state.lastHit.y + state.directionStep;
+				}
+				if (x < 0 || x >= 10 || y < 0 || y >= 10) {
+					return this.getComputerMove();
+				}
+			} else if (!state.direction) {
+				return state.neighbors.pop();
 			}
 		}
+
+		return [x, y];
 	}
 
 	#updateAI(x, y, status, sunk) {
 		const state = this.aiState;
 
-		state.visited.add(`${x},${y}`);
-
 		if (sunk) {
 			state.mode = "hunt";
-			state.targets = [];
+			state.originHit = null;
+			state.lastHit = null;
+			state.direction = null;
 			return;
 		}
 
 		if (status === "hit") {
-			state.mode = "target";
+			state.lastHit = { x, y };
+			if (state.mode === "target" && !state.direction) {
+				if (state.lastHit.x === state.originHit.x) {
+					state.direction = "vertical";
+					state.directionStep = state.lastHit.y > state.originHit.y ? 1 : -1;
+				} else if (state.lastHit.y === state.originHit.y) {
+					state.direction = "horizontal";
+					state.directionStep = state.lastHit.x > state.originHit.x ? 1 : -1;
+				}
+			} else if (state.mode === "hunt") {
+				state.mode = "target";
+				state.originHit = { x, y };
+				state.direction = null;
+				state.neighbors = this.#getNeighbors(x, y);
+			}
+		}
 
-			const neighbors = this.#getNeighbors(x, y);
-
-			for (const [nx, ny] of neighbors) {
-				const key = `${nx},${ny}`;
-				if (!state.visited.has(key)) {
-					state.targets.push([nx, ny]);
+		if (status === "miss") {
+			if (state.mode === "target") {
+				if (state.direction) {
+					state.lastHit = state.originHit;
+					state.directionStep *= -1;
 				}
 			}
 		}
@@ -208,6 +232,7 @@ export default class GameController {
 			this.phase = "gameover";
 			return {
 				status: result.status,
+				sunk: result.sunk,
 				winner,
 			};
 		}
@@ -218,6 +243,7 @@ export default class GameController {
 
 		return {
 			status: result.status,
+			sunk: result.sunk,
 			winner: null,
 		};
 	}
