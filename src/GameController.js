@@ -127,31 +127,12 @@ export default class GameController {
 
 	playComputerTurn() {
 		let state = this.aiState;
-		console.log("AI STATE", {
-			mode: state.mode,
-			direction: state.direction,
-			directionStep: state.directionStep,
-			originHit: state.originHit,
-			lastHit: state.lastHit,
-			neighbors: state.neighbors?.length,
-		});
 
 		const [x, y] = this.getComputerMove();
 
-		console.log("AI PICK", x, y);
-
 		const result = this.#resolveTurn(x, y);
 
-		console.log("[AI RESULT]", {
-			x,
-			y,
-			status: result.status,
-			sunk: result.sunk,
-		});
-
 		this.#updateAI(x, y, result.status, result.sunk);
-
-		console.log("[AI STATE AFTER]", JSON.parse(JSON.stringify(this.aiState)));
 
 		return result;
 	}
@@ -191,7 +172,6 @@ export default class GameController {
 			[moves[i], moves[j]] = [moves[j], moves[i]];
 		}
 
-		console.log(moves);
 		return moves;
 	}
 
